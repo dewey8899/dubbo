@@ -1,5 +1,7 @@
 package com.dewey.rpc.config.spring.annotation;
 
+import com.dewey.rpc.config.spring.TRPCConfiguration;
+import com.dewey.rpc.config.spring.TRPCPostProcessor;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -12,6 +14,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({TRPCPostProcessor.class})
+@Import({TRPCPostProcessor.class, TRPCConfiguration.class})
 public @interface EnableTRPC {
 }

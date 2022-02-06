@@ -1,10 +1,17 @@
-package com.dewey.rpc.config.spring.annotation;
+package com.dewey.rpc.config.spring;
 
+import com.dewey.rpc.common.tools.SpiUtils;
+import com.dewey.rpc.config.ProtocolConfig;
+import com.dewey.rpc.config.RegisterConfig;
 import com.dewey.rpc.config.annotation.TRpcService;
+import com.dewey.rpc.remoting.Transporter;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import java.net.URI;
 
 /**
  * @auther dewey
@@ -26,13 +33,38 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
      * @return
      * @throws BeansException
      */
+    @SneakyThrows
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         //1、服务提供者
         if (bean.getClass().isAnnotationPresent(TRpcService.class)){
             //启动网络服务，接受请求
             System.out.println("找到了需要开放网络访问的service实现类。启动网络服务，接受请求");
+            ProtocolConfig protocolConfig = applicationContext.getBean(ProtocolConfig.class);
+            String transporterName = protocolConfig.getTransporter();
+            Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
+            transporter.start(new URI("xxx://127.0.0.1:8080/"));
+        }
+        if (bean.getClass().equals(RegisterConfig.class)){
+            RegisterConfig config = (RegisterConfig) bean;
+            System.out.println("证明成功加载了配置文件并且spring创建bean:" + config.getAddress());
         }
         return bean;
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
