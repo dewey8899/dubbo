@@ -1,5 +1,7 @@
 package com.dewey.rpc.remoting.netty;
 
+import com.dewey.rpc.remoting.Codec;
+import com.dewey.rpc.remoting.Handler;
 import com.dewey.rpc.remoting.Server;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -21,7 +23,7 @@ public class NettyServer implements Server {
     //创建事件循环组
     EventLoopGroup boss = new NioEventLoopGroup();
     EventLoopGroup worker = new NioEventLoopGroup();
-    public void start(URI uri) {
+    public void start(URI uri, final Codec codec, final Handler handler) {
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss,worker)
@@ -31,9 +33,11 @@ public class NettyServer implements Server {
             .localAddress(new InetSocketAddress(uri.getHost(),uri.getPort()))
                     //添加handler--有连接之后的处理逻辑
             .childHandler(new ChannelInitializer<SocketChannel>() {
-                protected void initChannel(SocketChannel ch) throws Exception {
-                    //网络
-                    ch.pipeline().addLast(new NettyHandler());
+                protected void initChannel(SocketChannel ch) {
+                    //协议编解码【RpcInvocation】
+                    ch.pipeline().addLast(new NettyCodec(codec));
+                    //具体的逻辑执行
+                    ch.pipeline().addLast(new NettyHandler(handler));
                 }
             });
             ChannelFuture future = bootstrap.bind().sync();

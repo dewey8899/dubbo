@@ -8,5 +8,5 @@ import java.net.URI;
  * 启动一个网络访问服务
  */
 public interface Server {
-    void start(URI uri);
+    void start(URI uri,Codec codec, Handler handler);
 }

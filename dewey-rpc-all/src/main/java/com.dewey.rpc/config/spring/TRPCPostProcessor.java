@@ -4,7 +4,10 @@ import com.dewey.rpc.common.tools.SpiUtils;
 import com.dewey.rpc.config.ProtocolConfig;
 import com.dewey.rpc.config.RegisterConfig;
 import com.dewey.rpc.config.annotation.TRpcService;
+import com.dewey.rpc.remoting.Codec;
+import com.dewey.rpc.remoting.Handler;
 import com.dewey.rpc.remoting.Transporter;
+import com.dewey.rpc.remoting.TrpcChannel;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -12,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * @auther dewey
@@ -42,7 +46,27 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
             ProtocolConfig protocolConfig = applicationContext.getBean(ProtocolConfig.class);
             String transporterName = protocolConfig.getTransporter();
             Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
-            transporter.start(new URI("xxx://127.0.0.1:8080/"));
+            transporter.start(new URI("xxx://127.0.0.1:8080/"), new Codec() {
+                @Override
+                public byte[] encode(Object msg) throws Exception {
+                    return new byte[0];
+                }
+
+                @Override
+                public List<Object> decode(byte[] message) throws Exception {
+                    return null;
+                }
+            }, new Handler() {
+                @Override
+                public void onReceive(TrpcChannel trpcChannel, Object message) throws Exception {
+
+                }
+
+                @Override
+                public void onWrite(TrpcChannel trpcChannel, Object message) throws Exception {
+
+                }
+            });
         }
         if (bean.getClass().equals(RegisterConfig.class)){
             RegisterConfig config = (RegisterConfig) bean;
