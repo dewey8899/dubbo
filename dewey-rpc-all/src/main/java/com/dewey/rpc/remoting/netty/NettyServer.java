@@ -35,7 +35,7 @@ public class NettyServer implements Server {
             .childHandler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel ch) {
                     //协议编解码【RpcInvocation】
-                    ch.pipeline().addLast(new NettyCodec(codec));
+                    ch.pipeline().addLast(new NettyCodec(codec.createInstance()));
                     //具体的逻辑执行
                     ch.pipeline().addLast(new NettyHandler(handler));
                 }

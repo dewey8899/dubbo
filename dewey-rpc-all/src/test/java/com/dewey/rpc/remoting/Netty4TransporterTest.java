@@ -22,7 +22,7 @@ public class Netty4TransporterTest {
 
                     @Override
                     public List<Object> decode(byte[] message) throws Exception {
-                        List<Object> objects = new ArrayList<Object>();
+                        List<Object> objects = new ArrayList<>();
                         System.out.println("打印请求的内容：" + new String(message));
                         objects.add("1:"+new String(message));
                         objects.add("2:"+new String(message));

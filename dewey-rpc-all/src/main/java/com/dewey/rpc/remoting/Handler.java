@@ -6,6 +6,8 @@ package com.dewey.rpc.remoting;
  * 由具体的协议去实现
  */
 public interface Handler {
+
+    //message 就是rpcinvocation
     void onReceive(TrpcChannel trpcChannel,Object message) throws Exception;
 
     void onWrite(TrpcChannel trpcChannel,Object message) throws Exception;

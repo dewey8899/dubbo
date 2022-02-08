@@ -1,5 +1,7 @@
 package com.dewey.rpc.remoting;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
+
 import java.util.List;
 
 /**
@@ -11,5 +13,7 @@ import java.util.List;
 public interface Codec {
     byte[] encode(Object msg) throws Exception;
 
-    List<Object> decode(byte[] message) throws Exception;
+    List<Object> decode(byte[] data) throws Exception;
+
+    Codec createInstance();
 }
