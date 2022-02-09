@@ -1,6 +1,7 @@
 package com.dewey.rpc.common.tools;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,9 @@ import java.util.Map;
  */
 public class URIUtils {
     public static String getParam(URI exportUrl, String paramName){
-        exportUrl.getQuery();
-        return "";
+        String query = exportUrl.getQuery();
+        String name = urlSplit(query).get(paramName);
+        return name;
     }
     /**
      * 获取请求地址中的某个参数
@@ -19,29 +21,29 @@ public class URIUtils {
      * @param name
      * @return
      */
-    public static String getParam(String url, String name) {
-        return urlSplit(url).get(name);
-    }
+//    public static String getParam(String url, String name) {
+//        return urlSplit(url).get(name);
+//    }
 
-    /**
-     * 去掉url中的路径，留下请求参数部分
-     * @param url url地址
-     * @return url请求参数部分
-     */
-    private static String truncateUrlPage(String url) {
-        String strAllParam = null;
-        String[] arrSplit = null;
-        url = url.trim().toLowerCase();
-        arrSplit = url.split("[?]");
-        if (url.length() > 1) {
-            if (arrSplit.length > 1) {
-                for (int i = 1; i < arrSplit.length; i++) {
-                    strAllParam = arrSplit[i];
-                }
-            }
-        }
-        return strAllParam;
-    }
+//    /**
+//     * 去掉url中的路径，留下请求参数部分
+//     * @param url url地址
+//     * @return url请求参数部分
+//     */
+//    private static String truncateUrlPage(String url) {
+//        String strAllParam = null;
+//        String[] arrSplit = null;
+//        url = url.trim().toLowerCase();
+//        arrSplit = url.split("[?]");
+//        if (url.length() > 1) {
+//            if (arrSplit.length > 1) {
+//                for (int i = 1; i < arrSplit.length; i++) {
+//                    strAllParam = arrSplit[i];
+//                }
+//            }
+//        }
+//        return strAllParam;
+//    }
 
     /**
      * 将参数存入map集合
@@ -51,11 +53,7 @@ public class URIUtils {
     public static Map<String, String> urlSplit(String url) {
         Map<String, String> mapRequest = new HashMap<>();
         String[] arrSplit = null;
-        String strUrlParam = truncateUrlPage(url);
-        if (strUrlParam == null) {
-            return mapRequest;
-        }
-        arrSplit = strUrlParam.split("[&]");
+        arrSplit = url.split("[&]");
         for (String strSplit : arrSplit) {
             String[] arrSplitEqual = null;
             arrSplitEqual = strSplit.split("[=]");
@@ -71,5 +69,11 @@ public class URIUtils {
             }
         }
         return mapRequest;
+    }
+
+    public static void main(String[] args) throws URISyntaxException {
+        URI uri = new URI("http://IP:8080/service?param1=value1&param2=value2");
+        String param2 = URIUtils.getParam(uri, "param2");
+        System.out.println(param2);
     }
 }
