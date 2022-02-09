@@ -1,5 +1,7 @@
 package com.dewey.rpc.rpc.protocol;
 
+import com.dewey.rpc.rpc.Invoker;
+
 import java.net.URI;
 
 /**
@@ -11,6 +13,7 @@ public interface Protocol {
     /**
      *
      * @param exportUrl 协议名称://IP:端口/service全类名?参数名称=参数值&参数名称=参数2值
+     * @param invoker 调用具体实现类的对象
      */
-    void export(URI exportUrl);
+    void export(URI exportUrl, Invoker invoker);
 }

@@ -36,7 +36,7 @@ public class ClientMock {
         requestBuffer.writeBytes(requestBody);
         //3、发起请求
         SocketChannel trpcClient = SocketChannel.open();
-        trpcClient.connect(new InetSocketAddress("127.0.0.1", 8080));
+        trpcClient.connect(new InetSocketAddress("127.0.0.1", 10088));
         trpcClient.write(ByteBuffer.wrap(requestBuffer.array()));
         //接受响应
         ByteBuffer response = ByteBuffer.allocate(1025);
