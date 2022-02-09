@@ -16,6 +16,7 @@ public class TrpcServerHandler implements Handler {
         RpcInvocation rpcInvocation = (RpcInvocation) message;
         log.info("收到rpcInvocation信息：{}",rpcInvocation);
         //TODO 发起调用
+
     }
 
     @Override

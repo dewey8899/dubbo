@@ -46,27 +46,7 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
             ProtocolConfig protocolConfig = applicationContext.getBean(ProtocolConfig.class);
             String transporterName = protocolConfig.getTransporter();
             Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
-            transporter.start(new URI("xxx://127.0.0.1:8080/"), new Codec() {
-                @Override
-                public byte[] encode(Object msg) throws Exception {
-                    return new byte[0];
-                }
-
-                @Override
-                public List<Object> decode(byte[] message) throws Exception {
-                    return null;
-                }
-            }, new Handler() {
-                @Override
-                public void onReceive(TrpcChannel trpcChannel, Object message) throws Exception {
-
-                }
-
-                @Override
-                public void onWrite(TrpcChannel trpcChannel, Object message) throws Exception {
-
-                }
-            });
+//            transporter.start(new URI("xxx://127.0.0.1:8080/"), );
         }
         if (bean.getClass().equals(RegisterConfig.class)){
             RegisterConfig config = (RegisterConfig) bean;

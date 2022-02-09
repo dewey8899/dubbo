@@ -14,8 +14,8 @@ import java.net.URI;
 public class TrpcProtocol implements Protocol {
     @Override
     public void export(URI exportUrl) {
-//        String transporterName = URIUtils.getParam(exportUrl, "transporter");
-//        Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
+        String transporterName = URIUtils.getParam(exportUrl, "transporter");
+        Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
 //        transporter.start(exportUrl,)
     }
 }

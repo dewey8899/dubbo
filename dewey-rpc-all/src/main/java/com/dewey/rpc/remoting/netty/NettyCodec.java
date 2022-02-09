@@ -28,6 +28,7 @@ public class NettyCodec extends ChannelDuplexHandler {
         //1、读取数据
         ByteBuf data = (ByteBuf) msg;
         byte[] dataBytes = new byte[data.readableBytes()];
+        data.readBytes(dataBytes);
         // 2、格式转 --
         List<Object> out = codec.decode(dataBytes);
         //3、 处理器继续处理 -决定下一个处理器 处理数据的次数
