@@ -31,8 +31,8 @@ public class TrpcBootstrap {
                     .nextElement().getInterfaceAddresses().get(0)
                     .getAddress().getHostAddress();
             stringBuilder.append(protocolConfig.getName() + "://")
-            .append(hostAddress + ":")
-            .append(protocolConfig.getPort() + "/")
+                    .append(hostAddress + ":")
+                    .append(protocolConfig.getPort() + "/")
                     .append(serviceConfig.getService().getName()).append("?")
                     //版本号啥的不写了，意思一下吧
                     .append("transporter=").append(protocolConfig.getTransporter())

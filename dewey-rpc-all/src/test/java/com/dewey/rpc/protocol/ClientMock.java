@@ -39,7 +39,7 @@ public class ClientMock {
         trpcClient.connect(new InetSocketAddress("127.0.0.1", 10088));
         trpcClient.write(ByteBuffer.wrap(requestBuffer.array()));
         //接受响应
-        ByteBuffer response = ByteBuffer.allocate(1025);
+        ByteBuffer response = ByteBuffer.allocate(2048);
         trpcClient.read(response);
         System.out.println("响应内容：");
         System.out.println(new String(response.array()));

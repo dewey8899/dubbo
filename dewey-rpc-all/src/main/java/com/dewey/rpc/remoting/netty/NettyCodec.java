@@ -2,8 +2,11 @@ package com.dewey.rpc.remoting.netty;
 
 import com.dewey.rpc.remoting.Codec;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
  * 接收端角度：【把请求中的网络字节数据，转成java对象】
  * 发送端角度：【发送的数据以特定的协议格式进行发送】
  */
+@Slf4j
 public class NettyCodec extends ChannelDuplexHandler {
     private Codec codec;
 
@@ -35,6 +39,20 @@ public class NettyCodec extends ChannelDuplexHandler {
         for (Object o : out) {
             ctx.fireChannelRead(o);
         }
-        System.out.println("内容：" + msg);
+        log.info("内容：{}", msg);
+    }
+
+    /**
+     * 出栈
+     * @param ctx
+     * @param msg
+     * @param promise
+     * @throws Exception
+     */
+    @Override
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+
+        byte[] encode = codec.encode(msg);
+        super.write(ctx,Unpooled.wrappedBuffer(encode),promise);
     }
 }

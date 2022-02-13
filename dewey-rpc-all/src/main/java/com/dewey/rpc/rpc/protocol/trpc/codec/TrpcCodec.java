@@ -22,7 +22,16 @@ public class TrpcCodec implements Codec {
     ByteBuf tempMsg = Unpooled.buffer();
     @Override
     public byte[] encode(Object msg) throws Exception {
-        return new byte[0];
+        byte[] responseBody = (byte[]) msg;
+        //构建header
+        ByteBuf requestBuffer = Unpooled.buffer();
+        requestBuffer.writeByte(0xda);
+        requestBuffer.writeByte(0xbb);
+        requestBuffer.writeBytes(ByteUtil.int2bytes(responseBody.length));
+        requestBuffer.writeBytes(responseBody);
+        byte[] result = new byte[requestBuffer.readableBytes()];
+        requestBuffer.readBytes(result);
+        return result;
     }
 
     /**

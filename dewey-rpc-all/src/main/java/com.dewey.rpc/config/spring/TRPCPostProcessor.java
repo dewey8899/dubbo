@@ -12,6 +12,7 @@ import com.dewey.rpc.remoting.Transporter;
 import com.dewey.rpc.remoting.TrpcChannel;
 import com.dewey.rpc.rpc.protocol.Protocol;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +26,7 @@ import java.util.List;
  * @date 2022/2/5 22:57
  * spring扫描初始化对象之后，我要找到里面trpcService
  */
+@Slf4j
 public class TRPCPostProcessor implements ApplicationContextAware, InstantiationAwareBeanPostProcessor {
     ApplicationContext applicationContext;
 
@@ -45,26 +47,27 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
         //1、服务提供者
         if (bean.getClass().isAnnotationPresent(TRpcService.class)){
             //启动网络服务，接受请求
-            System.out.println("找到了需要开放网络访问的service实现类。启动网络服务，接受请求.构建serviceConfig配置");
+            log.info("找到了需要开放网络访问的service实现类。启动网络服务，接受请求.构建serviceConfig配置");
             ServiceConfig serviceConfig = new ServiceConfig();
             serviceConfig.addProtocolConfig(applicationContext.getBean(ProtocolConfig.class));
             serviceConfig.addRegistryConfig(applicationContext.getBean(RegisterConfig.class));
             serviceConfig.setReference(bean);
             TRpcService tRpcService = bean.getClass().getAnnotation(TRpcService.class);
+            Class<?> anInterface = bean.getClass().getInterfaces()[0];
             if (tRpcService.interfaceClass() == void.class) {
-                serviceConfig.setService(bean.getClass().getInterfaces()[0]);
+                serviceConfig.setService(anInterface);
             }else {
                 serviceConfig.setService(tRpcService.interfaceClass());
             }
             //协议名称 找到 具体协议实现
-            serviceConfig.setService(bean.getClass().getInterfaces()[0]);
-            String name = serviceConfig.getProtocolConfigs().get(0).getName();
-            Protocol protocol = (Protocol) SpiUtils.getServiceImpl(name, Protocol.class);
+            serviceConfig.setService(anInterface);
+//            String name = serviceConfig.getProtocolConfigs().get(0).getName();
+//            Protocol protocol = (Protocol) SpiUtils.getServiceImpl(name, Protocol.class);
             TrpcBootstrap.export(serviceConfig);
         }
         if (bean.getClass().equals(RegisterConfig.class)){
             RegisterConfig config = (RegisterConfig) bean;
-            System.out.println("证明成功加载了配置文件并且spring创建bean:" + config.getAddress());
+            log.info("证明成功加载了配置文件并且spring创建bean:{}",config.getAddress());
         }
         return bean;
     }

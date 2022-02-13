@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 @ToString
 public class RpcInvocation implements Serializable {
-    static AtomicLong SEQ = new AtomicLong();
+    static AtomicLong SEQ = new AtomicLong(0);
     private Long id;
     private String methodName;
     private String serviceName;

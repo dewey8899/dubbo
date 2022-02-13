@@ -36,7 +36,7 @@ public class TrpcServerHandler implements Handler {
         }
         //发送数据
         byte[] responseBody = getSerialization().serialize(response);
-//        trpcChannel.send(responseBody);
+        trpcChannel.send(responseBody);//此时会触发write方法
 
 
     }

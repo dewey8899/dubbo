@@ -18,6 +18,9 @@ import java.util.List;
  * @auther dewey
  * @date 2022/2/7 22:35
  * 集成了trpc 一套协议处理机制
+ * 测试步骤：
+ * 1、启动这个 main方法
+ * 2、启动ClientMock，然后在这个方法的控制台查看信息
  */
 public class TrpcProtocolTransporterTest {
     public static void main(String[] args) throws URISyntaxException {

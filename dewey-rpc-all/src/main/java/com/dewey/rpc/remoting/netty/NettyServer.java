@@ -10,6 +10,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -18,12 +19,13 @@ import java.net.URI;
  * @auther dewey
  * @date 2022/2/6 14:16
  */
+@Slf4j
 public class NettyServer implements Server {
     //开启一个网络服务
     //创建事件循环组
     EventLoopGroup boss = new NioEventLoopGroup();
     EventLoopGroup worker = new NioEventLoopGroup();
-    public void start(URI uri, final Codec codec, final Handler handler) {
+    public void start(URI uri, Codec codec, Handler handler) {
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss,worker)
@@ -41,7 +43,7 @@ public class NettyServer implements Server {
                 }
             });
             ChannelFuture future = bootstrap.bind().sync();
-            System.out.println("完成端口绑定和服务器启动");
+            log.info("完成端口绑定和服务器启动");
         }catch (Exception e){
             e.printStackTrace();
         }

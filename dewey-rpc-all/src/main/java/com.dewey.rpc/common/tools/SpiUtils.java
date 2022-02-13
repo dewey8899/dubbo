@@ -2,7 +2,6 @@ package com.dewey.rpc.common.tools;
 
 import com.dewey.rpc.common.serialize.Serialization;
 
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
@@ -10,6 +9,12 @@ import java.util.ServiceLoader;
  * @date 2022/2/5 22:38
  */
 public class SpiUtils {
+    /**
+     * 根据接口找到实现类
+     * @param serviceName 实现类的名字
+     * @param clazz 接口
+     * @return
+     */
     public static Object getServiceImpl(String serviceName,Class clazz){
         ServiceLoader<?> services = ServiceLoader.load(clazz,Thread.currentThread().getContextClassLoader());
         //根据服务定义的协议，一次暴露，如果有多个协议那就暴露多次

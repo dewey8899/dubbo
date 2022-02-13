@@ -1,7 +1,6 @@
 package com.dewey.rpc.rpc.protocol.trpc;
 
 import com.dewey.rpc.common.serialize.Serialization;
-import com.dewey.rpc.common.serialize.json.JsonSerialization;
 import com.dewey.rpc.common.tools.SpiUtils;
 import com.dewey.rpc.common.tools.URIUtils;
 import com.dewey.rpc.remoting.Transporter;
@@ -33,9 +32,11 @@ public class TrpcProtocol implements Protocol {
         //2、收到请求处理器
         TrpcServerHandler trpcServerHandler = new TrpcServerHandler();
         trpcServerHandler.setInvoker(invoker);
+        trpcServerHandler.setSerialization(serialization);
         //3、底层网络框架
         String transporterName = URIUtils.getParam(exportUrl, "transporter");
         Transporter transporter = (Transporter) SpiUtils.getServiceImpl(transporterName, Transporter.class);
+        assert transporter != null;
         transporter.start(exportUrl, trpcCodec, trpcServerHandler);
     }
 }
