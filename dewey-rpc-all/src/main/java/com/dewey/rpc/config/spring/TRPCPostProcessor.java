@@ -2,8 +2,10 @@ package com.dewey.rpc.config.spring;
 
 import com.dewey.rpc.common.tools.SpiUtils;
 import com.dewey.rpc.config.ProtocolConfig;
+import com.dewey.rpc.config.ReferenceConfig;
 import com.dewey.rpc.config.RegisterConfig;
 import com.dewey.rpc.config.ServiceConfig;
+import com.dewey.rpc.config.annotation.TRpcReference;
 import com.dewey.rpc.config.annotation.TRpcService;
 import com.dewey.rpc.config.util.TrpcBootstrap;
 import com.dewey.rpc.remoting.Codec;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 
@@ -65,9 +68,23 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
 //            Protocol protocol = (Protocol) SpiUtils.getServiceImpl(name, Protocol.class);
             TrpcBootstrap.export(serviceConfig);
         }
-        if (bean.getClass().equals(RegisterConfig.class)){
-            RegisterConfig config = (RegisterConfig) bean;
-            log.info("证明成功加载了配置文件并且spring创建bean:{}",config.getAddress());
+//        if (bean.getClass().equals(RegisterConfig.class)){
+//            RegisterConfig config = (RegisterConfig) bean;
+//            log.info("证明成功加载了配置文件并且spring创建bean:{}",config.getAddress());
+//        }
+        //2、服务引用-注入
+        for (Field field : bean.getClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(TRpcReference.class)){
+                continue;
+            }
+            //引用相关配置 保存在一个对象里边
+            ReferenceConfig referenceConfig = new ReferenceConfig();
+            referenceConfig.addRegistryConfig(applicationContext.getBean(RegisterConfig.class));
+            referenceConfig.addProtocolConfig(applicationContext.getBean(ProtocolConfig.class));
+            referenceConfig.setService(field.getType());
+            Object referenceBean = TrpcBootstrap.getReferenceBean(referenceConfig);
+            field.setAccessible(true);
+            field.set(bean,referenceBean);
         }
         return bean;
     }

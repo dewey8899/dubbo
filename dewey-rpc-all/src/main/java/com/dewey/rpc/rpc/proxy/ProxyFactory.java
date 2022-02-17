@@ -4,12 +4,16 @@ import com.dewey.rpc.rpc.Invoker;
 import com.dewey.rpc.rpc.RpcInvocation;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @auther dewey
  * @date 2022/2/9 22:28
  */
 public class ProxyFactory {
+    public static Object getProxy(Invoker invoker,Class<?>[] interfaces){
+        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new InvokerInvocationHandler(invoker));
+    }
     public static Invoker getInvoker(Object proxy,Class type){
         return new Invoker() {
             @Override
@@ -19,6 +23,7 @@ public class ProxyFactory {
 
             @Override
             public Object invoke(RpcInvocation rpcInvocation) throws Exception {
+//                反射调用对象的方法
                 Method method = proxy.getClass().getMethod(rpcInvocation.getMethodName(), rpcInvocation.getParameterTypes());
                 return method.invoke(proxy,rpcInvocation.getArguments());
             }
