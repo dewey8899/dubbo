@@ -34,7 +34,7 @@ public class TrpcBootstrap {
         for (ProtocolConfig protocolConfig : serviceConfig.getProtocolConfigs()) {
             // 2.1 组织URL --协议://ip:端口/service全类名?参数名称=参数值&参数名称=参数2值
             StringBuilder stringBuilder = new StringBuilder();
-//            此处可选择具体网课设备
+//            此处可选择具体网络设备
             String hostAddress = NetworkInterface.getNetworkInterfaces()
                     .nextElement().getInterfaceAddresses().get(0)
                     .getAddress().getHostAddress();
