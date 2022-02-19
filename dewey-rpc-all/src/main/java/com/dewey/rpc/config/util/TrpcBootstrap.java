@@ -49,12 +49,14 @@ public class TrpcBootstrap {
             System.out.println("准备暴露服务：" + exportUri);
 //          2.2  创建服务 -- 多个service 用同一个端口 TODO 判断端口是不是复用了
             Protocol protocol = (Protocol) SpiUtils.getServiceImpl(protocolConfig.getName(), Protocol.class);
+            assert protocol != null;
             protocol.export(exportUri,invoker);
             //注册到redis 中心
             for (RegisterConfig registerConfig : serviceConfig.getRegisterConfigs()) {
                 URI registryUri = new URI(registerConfig.getAddress());
                 //registryUri.getScheme() 指 "trpc.registry.address=RedisRegistry://127.0.0.1:6379" 中的  "RedisRegistry"
                 RegistryService registryService = (RegistryService) SpiUtils.getServiceImpl(registryUri.getScheme(), RedisRegistry.class);
+                assert null != registryService;
                 registryService.init(registryUri);
                 registryService.registry(exportUri);
             }
@@ -63,21 +65,22 @@ public class TrpcBootstrap {
 
     /**
      * 创建一个代理对象
-     * @param referenceConfig
-     * @return
+     * @param referenceConfig 引用配置
+     * @return 返回一个代理对象
      */
     public static Object getReferenceBean(ReferenceConfig referenceConfig){
         try {
             //创建  -- 用于访问远程服务器的
             Invoker invoker = new Invoker() {
                 @Override
-                public Class getInterface() {
+                public Class<?> getInterface() {
                     return null;
                 }
 
                 @Override
                 public Object invoke(RpcInvocation rpcInvocation) throws Exception {
                     Serialization serialization = (Serialization) SpiUtils.getServiceImpl("JsonSerialization", Serialization.class);
+                    if (null == serialization) throw new AssertionError();
                     byte[] requestBody = serialization.serialize(rpcInvocation);
                     //2、构建header
                     ByteBuf requestBuffer = Unpooled.buffer();
@@ -98,8 +101,7 @@ public class TrpcBootstrap {
                 }
             };
             //代理对象
-            Object proxy = ProxyFactory.getProxy(invoker, new Class[]{referenceConfig.getService()});
-            return proxy;
+            return ProxyFactory.getProxy(invoker, new Class[]{referenceConfig.getService()});
         }catch (Exception e){
             e.printStackTrace();
         }
