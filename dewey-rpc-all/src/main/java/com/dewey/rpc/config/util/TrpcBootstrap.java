@@ -1,7 +1,5 @@
 package com.dewey.rpc.config.util;
 
-import com.dewey.rpc.common.serialize.Serialization;
-import com.dewey.rpc.common.tools.ByteUtil;
 import com.dewey.rpc.common.tools.SpiUtils;
 import com.dewey.rpc.config.ProtocolConfig;
 import com.dewey.rpc.config.ReferenceConfig;
@@ -10,15 +8,14 @@ import com.dewey.rpc.config.ServiceConfig;
 import com.dewey.rpc.registry.RegistryService;
 import com.dewey.rpc.registry.redis.RedisRegistry;
 import com.dewey.rpc.rpc.Invoker;
-import com.dewey.rpc.rpc.RpcInvocation;
 import com.dewey.rpc.rpc.protocol.Protocol;
+import com.dewey.rpc.rpc.protocol.trpc.TrpcProtocol;
 import com.dewey.rpc.rpc.proxy.ProxyFactory;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @auther dewey
@@ -70,36 +67,11 @@ public class TrpcBootstrap {
      */
     public static Object getReferenceBean(ReferenceConfig referenceConfig){
         try {
-            //创建  -- 用于访问远程服务器的
-            Invoker invoker = new Invoker() {
-                @Override
-                public Class<?> getInterface() {
-                    return null;
-                }
+            TrpcProtocol trpcProtocol = new TrpcProtocol();
+            Invoker invoker = trpcProtocol.refer(new URI("TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization"));
 
-                @Override
-                public Object invoke(RpcInvocation rpcInvocation) throws Exception {
-                    Serialization serialization = (Serialization) SpiUtils.getServiceImpl("JsonSerialization", Serialization.class);
-                    if (null == serialization) throw new AssertionError();
-                    byte[] requestBody = serialization.serialize(rpcInvocation);
-                    //2、构建header
-                    ByteBuf requestBuffer = Unpooled.buffer();
-                    requestBuffer.writeByte(0xda);
-                    requestBuffer.writeByte(0xbb);
-                    requestBuffer.writeBytes(ByteUtil.int2bytes(requestBody.length));
-                    requestBuffer.writeBytes(requestBody);
-                    //3、发起请求
-                    SocketChannel trpcClient = SocketChannel.open();
-                    trpcClient.connect(new InetSocketAddress("127.0.0.1", 10088));
-                    trpcClient.write(ByteBuffer.wrap(requestBuffer.array()));
-                    //接受响应
-                    ByteBuffer response = ByteBuffer.allocate(2048);
-                    trpcClient.read(response);
-                    System.out.println("响应内容：");
-                    System.out.println(new String(response.array()));
-                    return new String(response.array());
-                }
-            };
+            //根据服务通过注册中心，找到服务提供者实例
+
             //代理对象
             return ProxyFactory.getProxy(invoker, new Class[]{referenceConfig.getService()});
         }catch (Exception e){

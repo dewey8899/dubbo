@@ -20,6 +20,14 @@ public class TrpcCodec implements Codec {
     public static final int HEADER_LEN = 6;
     //用来临时保留没有处理过的请求报文
     ByteBuf tempMsg = Unpooled.buffer();
+
+    /**
+     * 对于客户端而言，编码-- rpcInvocation
+     * 服务端而言，编码 ---response
+     * @param msg
+     * @return
+     * @throws Exception
+     */
     @Override
     public byte[] encode(Object msg) throws Exception {
         byte[] responseBody = (byte[]) msg;
@@ -35,7 +43,8 @@ public class TrpcCodec implements Codec {
     }
 
     /**
-     * 解码的结果是 RpcInvocation 对象集合
+     * 服务端 -- 解码的结果是 RpcInvocation 对象集合
+     * 客户端 -- 解码结果 -- response对象集合
      * @param data
      * @return
      * @throws Exception

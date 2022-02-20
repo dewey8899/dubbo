@@ -23,6 +23,15 @@ public class RpcInvocation implements Serializable {
 
     public RpcInvocation() {
         //初始化一个ID
-        this.setId(SEQ.incrementAndGet());
+        this.setId(incrementAndGet());
+    }
+    public final long incrementAndGet(){
+        long current;
+        long next;
+        do {
+            current = SEQ.get();
+            next = current >= 2147483647 ? 0 : current + 1;
+        } while (!SEQ.compareAndSet(current, next));
+        return next;
     }
 }

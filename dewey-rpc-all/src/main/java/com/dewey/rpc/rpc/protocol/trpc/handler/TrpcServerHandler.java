@@ -21,14 +21,16 @@ public class TrpcServerHandler implements Handler {
         RpcInvocation rpcInvocation = (RpcInvocation) message;
         System.out.println("收到rpcInvocation信息：" + rpcInvocation);
         //TODO 发起调用
-        Object invoke = null;
+        Object result = null;
         // 发出数据 -- response
         Response response = new Response();
         try {
-            invoke = getInvoker().invoke(rpcInvocation);
-            response.setStatus(0);
-            response.setContent(invoke);
-            System.out.println("服务端执行结果：" + invoke);
+            //调用目标接口实现类
+            result = getInvoker().invoke(rpcInvocation);
+            response.setRequestId(rpcInvocation.getId());
+            response.setStatus(200);
+            response.setContent(result);
+            System.out.println("服务端执行结果：" + result);
         } catch (Exception e) {
             response.setStatus(99);
             response.setContent(e.getMessage());
@@ -37,7 +39,6 @@ public class TrpcServerHandler implements Handler {
         //发送数据
         byte[] responseBody = getSerialization().serialize(response);
         trpcChannel.send(responseBody);//此时会触发write方法
-
 
     }
 

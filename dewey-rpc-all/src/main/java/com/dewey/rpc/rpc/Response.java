@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 public class Response {
     private Long requestId;//对应请求中携带的messageId
-    private int status;//99：异常 0: 正常
+    private int status;//99：异常 200: 正常
     private Object content;//响应内容  - 方法执行结果、异常信息
 }

@@ -16,5 +16,5 @@ public interface Transporter {
     Server start(URI uri,Codec codec, Handler handler);
 
     //connection
-
+    Client connect(URI uri, Codec codec, Handler handler) throws InterruptedException;
 }
