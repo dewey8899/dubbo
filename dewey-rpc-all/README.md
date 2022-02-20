@@ -9,3 +9,9 @@ SPI机制步骤
 
 自定义注解（EnableTRPC,TRpcService）集成spring注解，
 需要添加spring的context依赖
+
+
+Push failed
+unable to access 'https://github.com/dewey8899/dubbo.git/': OpenSSL SSL_read: Connection was reset, errno 10054
+
+git config --global http.sslVerify "false"
