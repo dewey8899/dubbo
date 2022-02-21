@@ -16,6 +16,6 @@ public class SmsServiceImpl implements SmsService {
     public Object send(String phone, String content) {
         log.info("发送短信{}:{}",phone,content);
 //        System.out.println("发送短信"+phone +":"+content);
-        return String.format("短信发送成功-->%s", UUID.randomUUID().toString());
+        return String.format("短信发送成功-->%s：%s",phone, content);
     }
 }

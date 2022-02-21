@@ -17,8 +17,8 @@ public class OrderServiceImpl implements OrderService {
     @TRpcReference
     private SmsService smsService;//本质是RPC调用，网络数据传输
     public void create(String orderContent) {
-        System.out.println("订单创建成功");
-        Object smsResult = smsService.send("10086" + UUID.randomUUID().toString(), orderContent);
-        System.out.println("smsService调用结果" + smsResult);
+        System.out.println("订单创建成功，开始发送短信");
+        Object smsResult = smsService.send("10086" + UUID.randomUUID(), orderContent);
+        System.out.println("smsService调用结果，" + smsResult);
     }
 }

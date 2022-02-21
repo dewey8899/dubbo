@@ -13,7 +13,7 @@ import java.io.IOException;
  * @auther dewey
  * @date 2022/2/5 22:40
  */
-@Configuration
+//@Configuration
 @ComponentScan("com.study.dubbo")
 @PropertySource("classpath:/trpc.properties")
 @EnableTRPC
@@ -22,7 +22,7 @@ public class SmsApplication {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SmsApplication.class);
         context.start();
         SmsServiceImpl bean = context.getBean(SmsServiceImpl.class);
-        System.out.println(bean.send("10086","启动时测试一条短信"));
+        System.out.println(bean.send("10086","SmsApplication启动时测试一条短信"));
         System.in.read();
         context.close();
     }
