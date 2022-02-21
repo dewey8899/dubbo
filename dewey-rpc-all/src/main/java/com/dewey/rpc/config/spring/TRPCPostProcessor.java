@@ -74,6 +74,8 @@ public class TRPCPostProcessor implements ApplicationContextAware, Instantiation
             referenceConfig.addRegistryConfig(applicationContext.getBean(RegisterConfig.class));
             referenceConfig.addProtocolConfig(applicationContext.getBean(ProtocolConfig.class));
             referenceConfig.setService(field.getType());
+            TRpcReference tRpcReference = field.getAnnotation(TRpcReference.class);
+            referenceConfig.setLoadBalance(tRpcReference.loadBalance());
             Object referenceBean = TrpcBootstrap.getReferenceBean(referenceConfig);
             field.setAccessible(true);
             field.set(bean,referenceBean);

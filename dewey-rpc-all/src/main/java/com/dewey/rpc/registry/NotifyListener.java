@@ -8,5 +8,5 @@ import java.util.Set;
  * @date 2022/2/16 23:16
  */
 public interface NotifyListener {
-    void notify(Set<URI> uriSet);
+    void notify(Set<URI> uriSet) throws InterruptedException;
 }

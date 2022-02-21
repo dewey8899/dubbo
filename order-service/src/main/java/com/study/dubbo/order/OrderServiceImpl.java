@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Service
 public class OrderServiceImpl implements OrderService {
-    @TRpcReference
+    @TRpcReference(loadBalance = "RandomLoadBalance")
     private SmsService smsService;//本质是RPC调用，网络数据传输
     public void create(String orderContent) {
         System.out.println("订单创建成功");

@@ -40,11 +40,19 @@ public class RedisRegistry implements RegistryService {
     }
 
     @Override
-    public void subscribe(String service, NotifyListener notifyListener) {
+    public void subscribe(String service, NotifyListener notifyListener) throws URISyntaxException, InterruptedException {
         if (localCache.get(service) == null){
             localCache.putIfAbsent(service, new HashSet<>());
             listenerMap.putIfAbsent(service, notifyListener);
             //第一次直接获取
+            Jedis jedis = new Jedis(address.getHost(), address.getPort());
+            String key = "trpc-" + service;
+            Set<String> serviceInstances = jedis.keys("trpc-*" + service + "?*");
+            for (String instance : serviceInstances) {
+                URI instanceUri = new URI(instance.replace("trpc-", ""));
+                localCache.get(service).add(instanceUri);
+            }
+            notifyListener.notify(localCache.get(service));
         }
     }
 
@@ -71,7 +79,7 @@ public class RedisRegistry implements RegistryService {
                 @Override
                 public void onPMessage(String pattern, String channel, String message) {
                     try {
-                        URI serviceURI = new URI(channel.replace("__keyspace@0__:trpc-*", ""));
+                        URI serviceURI = new URI(channel.replace("__keyevent@0__:trpc-", ""));
                         if ("set".equals(message)) {
                             Set<URI> uris = localCache.get(URIUtils.getParam(serviceURI, ""));
                             if (uris != null) {
@@ -86,21 +94,21 @@ public class RedisRegistry implements RegistryService {
                         }
                         if ("set".equals(message) || "expired".equals(message)) {
                             System.out.println("服务实例有变化，开始刷新");
-                            NotifyListener notifyListener = listenerMap.get(URIUtils.getParam(serviceURI, ""));
+                            NotifyListener notifyListener = listenerMap.get(URIUtils.getService(serviceURI));
                             if (notifyListener != null) {
-                                notifyListener.notify(localCache.get(URIUtils.getParam(serviceURI,"")));
+                                notifyListener.notify(localCache.get(URIUtils.getService(serviceURI)));
                             }
                         }
-                    } catch (URISyntaxException e) {
+                    } catch (URISyntaxException | InterruptedException e) {
                         e.printStackTrace();
                     }
-                    super.onPMessage(pattern, channel, message);
+                    Jedis jedis = new Jedis(address.getHost(), address.getPort());
+                    jedis.psubscribe(jedisPubSub, "__keyspace@0__:trpc-*");
                 }
-
                 @Override
                 public void onPSubscribe(String pattern, int subscribedChannels) {
                     System.out.println("注册中心开始监听：" + pattern);
-//                    super.onPSubscribe(pattern, subscribedChannels);
+                    super.onPSubscribe(pattern, subscribedChannels);
                 }
             };
         });

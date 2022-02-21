@@ -11,9 +11,15 @@ import java.util.Map;
  */
 public class URIUtils {
     public static String getParam(URI exportUrl, String paramName){
-        String query = exportUrl.getQuery();
+        //TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization
+        String query = exportUrl.getQuery();//得到的是 ？后的 参数 ---transporter=Netty4Transporter&serialization=JsonSerialization
         String name = urlSplit(query).get(paramName);
         return name;
+    }
+    public static String getService(URI exportUrl){
+        //TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization
+        String path = exportUrl.getPath();// 得到的是   /com.study.dubbo.sms.api.SmsService》
+        return path.substring(1);
     }
     /**
      * 获取请求地址中的某个参数
@@ -72,8 +78,10 @@ public class URIUtils {
     }
 
     public static void main(String[] args) throws URISyntaxException {
-        URI uri = new URI("http://IP:8080/service?param1=value1&param2=value2");
-        String param2 = URIUtils.getParam(uri, "param2");
+        URI uri = new URI("TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization");
+        String param2 = URIUtils.getParam(uri, "transporter");
+        String service = URIUtils.getService(uri);
+        System.out.println(service);
         System.out.println(param2);
     }
 }

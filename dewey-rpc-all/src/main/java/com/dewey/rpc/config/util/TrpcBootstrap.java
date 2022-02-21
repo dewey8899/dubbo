@@ -8,6 +8,7 @@ import com.dewey.rpc.config.ServiceConfig;
 import com.dewey.rpc.registry.RegistryService;
 import com.dewey.rpc.registry.redis.RedisRegistry;
 import com.dewey.rpc.rpc.Invoker;
+import com.dewey.rpc.rpc.cluster.ClusterInvoker;
 import com.dewey.rpc.rpc.protocol.Protocol;
 import com.dewey.rpc.rpc.protocol.trpc.TrpcProtocol;
 import com.dewey.rpc.rpc.proxy.ProxyFactory;
@@ -52,7 +53,7 @@ public class TrpcBootstrap {
             for (RegisterConfig registerConfig : serviceConfig.getRegisterConfigs()) {
                 URI registryUri = new URI(registerConfig.getAddress());
                 //registryUri.getScheme() 指 "trpc.registry.address=RedisRegistry://127.0.0.1:6379" 中的  "RedisRegistry"
-                RegistryService registryService = (RegistryService) SpiUtils.getServiceImpl(registryUri.getScheme(), RedisRegistry.class);
+                RegistryService registryService = (RegistryService) SpiUtils.getServiceImpl(registryUri.getScheme(), RegistryService.class);
                 assert null != registryService;
                 registryService.init(registryUri);
                 registryService.registry(exportUri);
@@ -67,13 +68,13 @@ public class TrpcBootstrap {
      */
     public static Object getReferenceBean(ReferenceConfig referenceConfig){
         try {
-            TrpcProtocol trpcProtocol = new TrpcProtocol();
-            Invoker invoker = trpcProtocol.refer(new URI("TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization"));
+//            TrpcProtocol trpcProtocol = new TrpcProtocol();
+//            Invoker invoker = trpcProtocol.refer(new URI("TrpcProtocal://127.0.0.1:10088/com.study.dubbo.sms.api.SmsService?transporter=Netty4Transporter&serialization=JsonSerialization"));
 
             //根据服务通过注册中心，找到服务提供者实例
-
+            ClusterInvoker clusterInvoker = new ClusterInvoker(referenceConfig);
             //代理对象
-            return ProxyFactory.getProxy(invoker, new Class[]{referenceConfig.getService()});
+            return ProxyFactory.getProxy(clusterInvoker, new Class[]{referenceConfig.getService()});
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.dewey.rpc.registry;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @auther dewey
@@ -18,7 +19,7 @@ public interface RegistryService {
      * @param service
      * @param notifyListener
      */
-    void subscribe(String service, NotifyListener notifyListener);
+    void subscribe(String service, NotifyListener notifyListener) throws URISyntaxException, InterruptedException;
 
     /**
      * 配置连接信息

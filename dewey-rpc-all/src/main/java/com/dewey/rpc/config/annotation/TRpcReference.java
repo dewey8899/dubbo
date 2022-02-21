@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TRpcReference {
     //TODO 限流相关参数
-    String loadbalance() default "RandomLoadBalance";
+    String loadBalance() default "RandomLoadBalance";
 }
