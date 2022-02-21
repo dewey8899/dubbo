@@ -19,7 +19,7 @@ public class TrpcServerHandler implements Handler {
     @Override
     public void onReceive(TrpcChannel trpcChannel, Object message) throws Exception {
         RpcInvocation rpcInvocation = (RpcInvocation) message;
-        System.out.println("收到rpcInvocation信息：" + rpcInvocation);
+        System.out.println("TrpcServerHandler 收到rpcInvocation信息：" + rpcInvocation);
         //TODO 发起调用
         Object result = null;
         // 发出数据 -- response
