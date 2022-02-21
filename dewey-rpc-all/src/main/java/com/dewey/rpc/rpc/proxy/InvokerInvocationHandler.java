@@ -22,7 +22,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(invoker, args);
         }
-        System.out.println("handler .... ");
+        System.out.println("InvokerInvocationHandler invoke .... ");
         String methodName = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length == 0) {
