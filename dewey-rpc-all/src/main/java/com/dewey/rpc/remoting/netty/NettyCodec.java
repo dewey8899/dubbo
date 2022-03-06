@@ -45,7 +45,7 @@ public class NettyCodec extends ChannelDuplexHandler {
     /**
      * 出栈
      * @param ctx
-     * @param msg
+     * @param msg java对象
      * @param promise
      * @throws Exception
      */
