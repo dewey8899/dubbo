@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 public class TrpcBootstrap {
     //暴露service服务
     public static void export(ServiceConfig serviceConfig) throws SocketException, URISyntaxException {
-        // 1、构建一个代理对象（静态代理）
+        // 1、构建一个代理对象（静态代理）serviceConfig.getReference() = SmsServiceImpl
         Invoker invoker = ProxyFactory.getInvoker(serviceConfig.getReference(), serviceConfig.getService());
         //invoker对象
         //根据服务定义的协议，一次暴露。如果有多个协议那就暴露多次

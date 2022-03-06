@@ -13,7 +13,7 @@ import java.io.IOException;
  * @auther dewey
  * @date 2022/2/5 22:40
  */
-//@Configuration
+@Configuration
 @ComponentScan("com.study.dubbo")
 @PropertySource("classpath:/trpc.properties")
 @EnableTRPC
