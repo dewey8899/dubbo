@@ -32,8 +32,6 @@ public class InvokerInvocationHandler implements InvocationHandler {
                 return null;
             }else if ("hashCode".equals(methodName)){
                 return invoker.hashCode();
-            }else if ("hashCode".equals(methodName)){
-                return invoker.hashCode();
             }
         }else if (parameterTypes.length == 1 && "equals".equals(methodName)){
             return invoker.equals(args[0]);

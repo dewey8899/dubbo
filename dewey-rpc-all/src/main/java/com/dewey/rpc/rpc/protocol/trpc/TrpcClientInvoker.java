@@ -72,7 +72,7 @@ public class TrpcClientInvoker implements Invoker {
             //future get 获取结果
             Object result = null;
             try {
-                result = completableFuture.get(1, TimeUnit.SECONDS);
+                result = completableFuture.get(15, TimeUnit.SECONDS);
                 Response response = (Response) result;
                 System.out.println(response.getContent());
                 System.out.println( "2L -->" + Thread.currentThread().getId());
